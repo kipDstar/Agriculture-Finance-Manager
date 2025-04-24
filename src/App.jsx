@@ -1,19 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ExpenseForm from './assets/components/ExpenseForm.jsx';
 import ExpenseList from './assets/components/ExpenseList.jsx';
 
 
 function App() {
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpenses] = useState(() => {
+    const savedExpenses = localStorage.getItem('expenses');
+    return savedExpenses ? JSON.parse(savedExpenses) : [];
+  });
+  useEffect(() => {
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+  }, [expenses]);
 
-  // Add new expense
+ 
   const handleAddExpense = (newExpense) => {
-    setExpenses(prev => [...prev, newExpense]);
+    setExpenses([...expenses, newExpense]);
   };
 
-  // Delete expense
   const handleDeleteExpense = (id) => {
-    setExpenses(prev => prev.filter(exp => exp.id !== id));
+    setExpenses(expenses.filter(exp => exp.id !== id));
   };
 
   return (
